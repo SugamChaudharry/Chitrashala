@@ -1,7 +1,7 @@
 // components/home/image-grid.tsx
 import React from 'react';
 import Image from 'next/image'; // Use next/image for optimization
-import { ImageItem } from '~/types';
+import type { ImageItem } from '~/types';
 import { Button } from '~/components/ui/button';
 
 interface ImageGridProps {

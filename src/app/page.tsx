@@ -10,7 +10,7 @@ import { Footer } from '~/app/_components/footer';
 import { HeroSection } from '~/components/home/hero-section';
 import { ImageGrid } from '~/components/home/image-grid';
 import { FeaturesSection } from '~/components/home/features-section';
-import { ImageItem, FeatureItem } from '~/types';
+import type { ImageItem, FeatureItem } from '~/types';
 import { Logo } from '~/components/logo';
 
 const IMAGES: ImageItem[] = [
