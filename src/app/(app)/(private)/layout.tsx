@@ -1,0 +1,19 @@
+import { redirect } from "next/navigation";
+import { getSession } from "~/server/better-auth/server"
+import ClientLayout from "../clientLayout";
+
+export default async function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const session = await getSession();
+
+  if (!session) redirect("/login")
+
+  return <div className="flex flex-col min-h-screen justify-between">
+    <ClientLayout>
+      {children}
+    </ClientLayout>
+  </div>
+}

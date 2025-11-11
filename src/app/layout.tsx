@@ -5,7 +5,6 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ThemeProvider } from "~/components/theme-provider"
-
 export const metadata: Metadata = {
   title: "Chitrashala",
   description: "image showcase gallary",
@@ -28,7 +27,9 @@ export default function RootLayout({
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange>
+
             {children}
+
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

@@ -14,6 +14,10 @@ export const env = createEnv({
     BETTER_AUTH_GOOGLE_CLIENT_ID: z.string().min(1),
     BETTER_AUTH_GOOGLE_CLIENT_SECRET: z.string().min(1),
     DATABASE_URL: z.string().url(),
+
+    CLOUDINARY_API_KEY: z.string(),
+    CLOUDINARY_API_SECRET: z.string(),
+    CLOUDINARY_URL: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -26,6 +30,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().min(1),
+    NEXT_PUBLIC_CLOUDINARY_NAME: z.string().min(1),
   },
 
   /**
@@ -41,6 +46,10 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_CLOUDINARY_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_URL: process.env.CLOUDINARY_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
