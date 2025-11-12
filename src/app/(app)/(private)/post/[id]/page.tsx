@@ -1,12 +1,9 @@
 import Image from "next/image";
 import { api } from "~/trpc/server";
 
-interface PostDetailPageProps {
-  params: { id: string };
-}
-
-export default async function PostDetailPage({ params }: PostDetailPageProps) {
-  const post = await api.post.getPostById({ id: params.id });
+export default async function PostDetailPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
+  const post = await api.post.getPostById({ id });
 
   if (!post) {
     return (
