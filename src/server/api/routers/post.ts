@@ -2,10 +2,75 @@ import { user } from "auth-schema";
 import { desc, eq, and, inArray, ilike, or } from "drizzle-orm";
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { post, postToTag, tag } from "~/server/db/schema";
 
 export const postRouter = createTRPCRouter({
+
+  // 🟢 Get latest N public posts
+  getLatestPosts: publicProcedure
+    .input(z.object({ limit: z.number().min(1).max(50).default(5) }))
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+
+      const posts = await db
+        .select({
+          id: post.id,
+          userId: post.userId,
+          title: post.title,
+          description: post.description,
+          mediaUrl: post.mediaUrl,
+          thumbnailUrl: post.thumbnailUrl,
+          type: post.type,
+          createdAt: post.createdAt,
+        })
+        .from(post)
+        .where(eq(post.visibility, "public"))
+        .orderBy(desc(post.createdAt))
+        .limit(input.limit);
+
+      if (!posts.length) return { posts: [] };
+
+      const users = await db
+        .select({
+          id: user.id,
+          name: user.name,
+          image: user.image,
+        })
+        .from(user)
+        .where(inArray(user.id, posts.map((p) => p.userId)));
+
+      const postTags = await db
+        .select({
+          postId: postToTag.postId,
+          tagName: tag.name,
+        })
+        .from(postToTag)
+        .leftJoin(tag, eq(postToTag.tagId, tag.id))
+        .where(inArray(postToTag.postId, posts.map((p) => p.id)));
+
+      const postsWithData = posts.map((p) => {
+        const u = users.find((u) => u.id === p.userId);
+
+        return {
+          ...p,
+          user: u
+            ? {
+              id: u.id,
+              name: u.name,
+              image: u.image,
+            }
+            : null,
+          tags: postTags
+            .filter((t) => t.postId === p.id)
+            .map((t) => t.tagName)
+            .filter((t): t is string => t !== null && t !== undefined)
+        };
+      });
+
+      return { posts: postsWithData };   // ✅ Missing return fixed
+    }),
+
   // 🟢 Get all public posts with tags
   getPosts: protectedProcedure.query(async ({ ctx }) => {
     const { db } = ctx;
